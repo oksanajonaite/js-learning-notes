@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>04 · Atributai</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>04 · Elementų atributai</h1>
+
+<p><strong>Atributas</strong> — tai HTML žymėje rašoma savybė: <code>id</code>, <code>class</code>,
+<code>href</code>, <code>src</code>, <code>disabled</code> ir kt.</p>
+
+<pre>const div = document.createElement('div');   // sukuriam naują div
+
+div.setAttribute('id', 'theDiv');   // jei id yra — pakeis, jei ne — sukurs
+div.getAttribute('id');             // grąžina atributo reikšmę: "theDiv"
+div.removeAttribute('id');          // pašalina nurodytą atributą</pre>
+
+<h2>Pridėjimas — setAttribute</h2>
+<pre>&lt;button type="button" id="myBtn"&gt;Click Me&lt;/button&gt;
+
+var btn = document.getElementById("myBtn");
+btn.setAttribute("class", "click-btn");
+btn.setAttribute("disabled", "");</pre>
+
+<div class="demo">
+  <button type="button" id="myBtn">Click Me</button>
+  <button onclick="document.getElementById('myBtn').setAttribute('disabled','')">Užrakinti mygtuką</button>
+  <button onclick="document.getElementById('myBtn').removeAttribute('disabled')">Atrakinti</button>
+</div>
+
+<h2>Gavimas — getAttribute</h2>
+<pre>&lt;a href="https://www.google.com/" target="_blank" id="myLink"&gt;Google&lt;/a&gt;
+
+var link = document.getElementById("myLink");
+var href = link.getAttribute("href");     // https://www.google.com/
+var target = link.getAttribute("target"); // _blank</pre>
+
+<div class="demo">
+  <a href="https://www.google.com/" target="_blank" id="myLink">Google</a>
+</div>
+
+<h2>Keitimas — setAttribute</h2>
+<pre>&lt;a href="#" id="myLink2"&gt;Tutorial Republic&lt;/a&gt;
+
+var link = document.getElementById("myLink2");
+link.setAttribute("href", "https://www.tutorialrepublic.com");</pre>
+
+<div class="demo">
+  <a href="#" id="myLink2">Tutorial Republic</a><br>
+  <button onclick="document.getElementById('myLink2').setAttribute('href','https://www.tutorialrepublic.com'); atnaujink()">Nustatyti tikrą href</button>
+</div>
+
+<h2>Šalinimas — removeAttribute</h2>
+<pre>var link = document.getElementById("myLink3");
+link.removeAttribute("href");   // nuoroda nustoja būti nuoroda</pre>
+
+<div class="demo">
+  <a href="https://www.google.com/" id="myLink3">Google</a><br>
+  <button onclick="document.getElementById('myLink3').removeAttribute('href'); atnaujink()">Pašalinti href</button>
+</div>
+
+<h2>Paveikslėlio keitimas per .src</h2>
+<pre>&lt;img id="myImage" src="smiley.gif"&gt;
+
+document.getElementById("myImage").src = "landscape.jpg";</pre>
+
+<div class="demo">
+  <img id="myImage" width="120" alt="paveikslėlis"
+       src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80'%3E%3Crect width='120' height='80' fill='%23f0ad4e'/%3E%3Ctext x='60' y='45' font-size='14' text-anchor='middle'%3Esmiley.gif%3C/text%3E%3C/svg%3E">
+  <br>
+  <button onclick="keistiPaveiksleli()">Pakeisti į landscape.jpg</button>
+</div>
+
+<h2>Dabartinės reikšmės</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">💡 Dažniausiems atributams yra ir <strong>trumpesnis</strong> būdas — savybė:
+<code>link.href</code>, <code>img.src</code>, <code>btn.disabled</code>. Veikia abu būdai,
+bet <code>setAttribute</code> tinka <em>bet kokiam</em> atributui, taip pat ir savo sugalvotam.</p>
+
+<script>
+  const out = document.getElementById("out");
+
+  function atnaujink() {
+    const link = document.getElementById("myLink");
+    const link2 = document.getElementById("myLink2");
+    const link3 = document.getElementById("myLink3");
+    const btn = document.getElementById("myBtn");
+
+    out.textContent =
+      "myLink.getAttribute('href')   → " + link.getAttribute("href") + "\n" +
+      "myLink.getAttribute('target') → " + link.getAttribute("target") + "\n" +
+      "myLink2.getAttribute('href')  → " + link2.getAttribute("href") + "\n" +
+      "myLink3.getAttribute('href')  → " + link3.getAttribute("href") + "\n" +
+      "        (paspaudus „Pašalinti href“ čia atsiras null — atributo nebėra)\n" +
+      "myBtn.hasAttribute('disabled')→ " + btn.hasAttribute("disabled") + "\n" +
+      "\n" +
+      "Visi myLink atributai:\n  " +
+      Array.from(link.attributes).map((a) => a.name + '="' + a.value + '"').join("\n  ") +
+      "\n\nAtributas vs savybė (myLink2, kurio HTML'e href=\"#\"):\n" +
+      "  link2.getAttribute('href') → " + link2.getAttribute("href") + "\n" +
+      "        (tiksliai tas tekstas, kuris parašytas HTML'e)\n" +
+      "  link2.href                 → " + trumpinti(link2.href) + "\n" +
+      "        (naršyklės apskaičiuotas PILNAS adresas)";
+  }
+
+  // Pilnas adresas gali būti labai ilgas — rodom tik pradžią
+  function trumpinti(t) {
+    return t.length > 70 ? t.slice(0, 70) + "..." : t;
+  }
+
+  function keistiPaveiksleli() {
+    document.getElementById("myImage").src =
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80'%3E%3Crect width='120' height='80' fill='%236b7c4a'/%3E%3Ctext x='60' y='45' font-size='12' text-anchor='middle' fill='white'%3Elandscape.jpg%3C/text%3E%3C/svg%3E";
+  }
+
+  atnaujink();
+</script>
+
+</body>
+</html>

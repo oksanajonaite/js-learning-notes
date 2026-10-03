@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>01 · Elementų kūrimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>01 · DOM elementų kūrimas</h1>
+
+<h2>Trys žingsniai</h2>
+
+<p><strong>1. Teksto kūrimas:</strong></p>
+<pre>var node = document.createTextNode("This is new.");</pre>
+
+<p><strong>2. HTML elemento kūrimas:</strong></p>
+<pre>var para = document.createElement("p");</pre>
+
+<p><strong>3. Teksto ir elemento sujungimas</strong><br>
+<small>(analogiškai vyksta ir dviejų elementų sujungimas, naujas elementas pridedamas
+tėvinio elemento gale)</small></p>
+
+<pre>para.appendChild(node);
+  ↑              ↑
+prie kurio     kurį elementą
+elemento       jungiame</pre>
+
+<h2>Pilnas pavyzdys</h2>
+
+<pre>&lt;div id="div1"&gt;
+&lt;p id="p1"&gt;This is a paragraph.&lt;/p&gt;
+&lt;p id="p2"&gt;This is another paragraph.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+var para = document.createElement("p");
+var node = document.createTextNode("This is new.");
+para.appendChild(node);
+var element = document.getElementById("div1");
+element.appendChild(para);
+&lt;/script&gt;</pre>
+
+<div class="demo">
+  <div id="div1">
+    <p id="p1">This is a paragraph.</p>
+    <p id="p2">This is another paragraph.</p>
+  </div>
+  <button onclick="prideti()">Paleisti kodą</button>
+  <button onclick="atstatyti()">↺ Atstatyti</button>
+</div>
+
+<p class="tip">‼️ <strong>Naujai sukurtas elementas nematomas puslapyje, kol jis nepridedamas
+prie jau esamo elemento</strong> (<code>appendChild</code>).</p>
+
+<h2>Ką rodo kiekvienas žingsnis</h2>
+<div class="out" id="out"></div>
+
+<h2>Trumpesnis būdas: textContent</h2>
+
+<pre>// vietoj dviejų eilučių:
+var node = document.createTextNode("This is new.");
+para.appendChild(node);
+
+// galima rašyti vieną:
+para.textContent = "This is new.";</pre>
+
+<p class="tip">💡 <code>createTextNode</code> praverčia, kai tekstą reikia pridėti <em>šalia</em> jau
+esančio turinio. Jei elementas tuščias — <code>textContent</code> trumpiau ir aiškiau.</p>
+
+<h2>Naujesni metodai: append / prepend</h2>
+
+<pre>element.appendChild(para);     // senasis: TIK vieną elementą, grąžina elementą
+element.append(para);          // naujasis: kelis iš karto, galima ir tekstą
+element.append(para, "tekstas", kitas);
+element.prepend(para);         // į PRADŽIĄ, ne į galą</pre>
+
+<div class="demo">
+  <div id="div2" style="border:1px solid #ccc; padding:8px;">
+    <p>Pradinė pastraipa</p>
+  </div>
+  <button onclick="demoAppend()">append() — į galą</button>
+  <button onclick="demoPrepend()">prepend() — į pradžią</button>
+  <button onclick="atstatyti2()">↺ Atstatyti</button>
+</div>
+
+<script>
+  const div1 = document.getElementById("div1");
+  const div2 = document.getElementById("div2");
+  const pradinis1 = div1.innerHTML;
+  const pradinis2 = div2.innerHTML;
+  const out = document.getElementById("out");
+
+  function prideti() {
+    // 1. Sukuriam elementą — puslapyje jo DAR NĖRA
+    var para = document.createElement("p");
+
+    // 2. Sukuriam teksto mazgą — jis irgi dar niekur nepriklauso
+    var node = document.createTextNode("This is new.");
+
+    // 3. Sujungiam tekstą su elementu
+    para.appendChild(node);
+
+    // 4. Pridedam elementą prie jau esamo — TIK DABAR jis matomas
+    var element = document.getElementById("div1");
+    element.appendChild(para);
+
+    out.textContent =
+      "1) document.createElement('p')\n" +
+      "   → sukurtas <p></p>, bet puslapyje jo NĖRA\n" +
+      "   → para.parentNode = null  (neturi tėvinio elemento)\n\n" +
+      "2) document.createTextNode('This is new.')\n" +
+      "   → sukurtas teksto mazgas, nodeType = 3\n\n" +
+      "3) para.appendChild(node)\n" +
+      "   → para.innerHTML = '" + para.innerHTML + "'\n" +
+      "   → bet puslapyje VIS DAR nematyti\n\n" +
+      "4) element.appendChild(para)\n" +
+      "   → para.parentNode = " + para.parentNode.tagName + "#" + para.parentNode.id + "\n" +
+      "   → TIK DABAR atsirado puslapyje ✅\n\n" +
+      "div1 vaikų kiekis dabar: " + div1.children.length;
+  }
+
+  function atstatyti() {
+    div1.innerHTML = pradinis1;
+    out.textContent = "";
+  }
+
+  function demoAppend() {
+    const p = document.createElement("p");
+    p.textContent = "append() — atsidūriau gale";
+    p.style.color = "#6b7c4a";
+    div2.append(p);
+  }
+
+  function demoPrepend() {
+    const p = document.createElement("p");
+    p.textContent = "prepend() — atsidūriau pradžioje";
+    p.style.color = "#b8693a";
+    div2.prepend(p);
+  }
+
+  function atstatyti2() {
+    div2.innerHTML = pradinis2;
+  }
+</script>
+
+</body>
+</html>

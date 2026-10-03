@@ -1,0 +1,51 @@
+/* Bendras stilius visiems šios temos pavyzdžiams */
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 760px;
+  margin: 30px auto;
+  padding: 0 16px;
+  line-height: 1.6;
+  color: #222;
+}
+h1 { font-size: 1.4rem; }
+h2 { font-size: 1.05rem; margin-top: 28px; border-top: 1px solid #eee; padding-top: 18px; }
+pre {
+  background: #f4f4f4;
+  padding: 10px 14px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: .85rem;
+}
+code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; }
+.out {
+  background: #1e1e1e;
+  color: #b5f4a5;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: .85rem;
+  min-height: 1.5em;
+}
+.tip {
+  background: #fff8e1;
+  border-left: 4px solid #f0ad4e;
+  padding: 8px 14px;
+}
+.demo {
+  border: 2px dashed #bbb;
+  border-radius: 6px;
+  padding: 14px;
+  margin: 12px 0;
+}
+button {
+  font: inherit;
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: 1px solid #888;
+  background: #fff;
+  cursor: pointer;
+}
+button:hover { background: #f0f0f0; }
+input { font: inherit; padding: 5px 8px; border: 1px solid #aaa; border-radius: 4px; }
+nav.tema { font-size: .85rem; color: #666; margin-bottom: 20px; }

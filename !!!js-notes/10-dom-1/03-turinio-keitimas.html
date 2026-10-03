@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>03 · Turinio keitimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>03 · Elementų turinio keitimas</h1>
+
+<h2>innerHTML = perrašo visą buvusį turinį</h2>
+<pre>&lt;p id="p1"&gt;Hello World!&lt;/p&gt;
+
+&lt;script&gt;
+document.getElementById("p1").innerHTML = "New text!";
+&lt;/script&gt;</pre>
+
+<div class="demo">
+  <p id="p1">Hello World!</p>
+  <button onclick="document.getElementById('p1').innerHTML = 'New text!'">innerHTML = "New text!"</button>
+  <button onclick="document.getElementById('p1').innerHTML = 'Hello World!'">Atstatyti</button>
+</div>
+
+<h2>innerHTML += papildo elemento turinį</h2>
+<pre>document.getElementById("p2").innerHTML += "New text!";</pre>
+
+<div class="demo">
+  <p id="p2">Hello World! </p>
+  <button onclick="document.getElementById('p2').innerHTML += 'New text! '">innerHTML += "New text!"</button>
+  <button onclick="document.getElementById('p2').innerHTML = 'Hello World! '">Atstatyti</button>
+</div>
+
+<h2>innerHTML supranta HTML žymes</h2>
+<div class="demo">
+  <p id="p3">Paspausk mygtuką</p>
+  <button onclick="document.getElementById('p3').innerHTML = '&lt;b&gt;Storai&lt;/b&gt; ir &lt;i&gt;kursyvu&lt;/i&gt;'">innerHTML su žymėmis</button>
+  <button onclick="document.getElementById('p3').textContent = '&lt;b&gt;Storai&lt;/b&gt;'">textContent su žymėmis</button>
+</div>
+
+<p class="tip">💡 <code>innerHTML</code> HTML žymes <strong>atpažįsta</strong>, o <code>textContent</code>
+jas rodo kaip <strong>paprastą tekstą</strong>. Jei įrašai vartotojo įvestą tekstą — naudok
+<code>textContent</code>, kitaip kas nors gali įterpti savo kodą.</p>
+
+<h2>Palyginimas</h2>
+<div class="out" id="out"></div>
+
+<script>
+  const out = document.getElementById("out");
+  const log = (t) => (out.textContent += t + "\n");
+
+  // ⚠️ Elementą reikia ĮDĖTI į puslapį — innerText priklauso nuo to,
+  //    kaip elementas atrodo ekrane, todėl "atsietam" elementui jis neveiktų.
+  const testas = document.createElement("div");
+  testas.innerHTML = "  Labas <b>pasauli</b>  ";
+  document.body.appendChild(testas);
+
+  log("Elemento turinys: '  Labas <b>pasauli</b>  '");
+  log("");
+  log(".innerHTML    → " + testas.innerHTML);
+  log("   (HTML su žymėmis)");
+  log("");
+  log(".textContent  → '" + testas.textContent + "'");
+  log("   (grynas tekstas, tarpai išsaugomi)");
+  log("");
+  log(".innerText    → '" + testas.innerText + "'");
+  log("   (tekstas taip, kaip MATOMAS ekrane — tarpai sutraukiami)");
+  log("");
+  log("Kada ką naudoti:");
+  log("  innerHTML    → kai reikia įterpti HTML žymes");
+  log("  textContent  → kai reikia tik teksto ✅ saugiausia ir greičiausia");
+  log("  innerText    → retai; jis priklauso nuo CSS ir yra lėtesnis");
+
+  testas.remove();   // laikinas elementas nebereikalingas
+</script>
+
+</body>
+</html>

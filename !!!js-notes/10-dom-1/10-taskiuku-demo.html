@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>10 · Taškiukų demo</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #drobe {
+    height: 200px;
+    background: beige;
+    position: relative;      /* kad taškiukai skaičiuotųsi nuo šio rėmelio */
+    border-radius: 6px;
+    cursor: crosshair;
+  }
+  .dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 4px;      /* rounds corners */
+    background: blue;
+    position: absolute;
+  }
+</style>
+</head>
+<body>
+
+<h1>10 · Viską sudedam kartu: taškiukų demo</h1>
+
+<p>Šis pavyzdys sujungia beveik viską iš šios temos: <strong>įvykio klausymą</strong>,
+<strong>elemento kūrimą</strong>, <strong>klasės priskyrimą</strong>, <strong>stiliaus keitimą</strong>
+ir <strong>event objekto</strong> savybes.</p>
+
+<pre>&lt;style&gt;
+  body { height: 200px; background: beige; }
+  .dot {
+    height: 8px; width: 8px;
+    border-radius: 4px;   /* rounds corners */
+    background: blue;
+    position: absolute;
+  }
+&lt;/style&gt;
+
+&lt;script&gt;
+  window.addEventListener("click", event =&gt; {
+    let dot = document.createElement("div");
+    dot.className = "dot";
+    dot.style.left = (event.pageX - 4) + "px";
+    dot.style.top  = (event.pageY - 4) + "px";
+    document.body.appendChild(dot);
+  });
+&lt;/script&gt;</pre>
+
+<h2>Pabandyk — spaudyk rėmelio viduje</h2>
+
+<div id="drobe"></div>
+
+<p>
+  <button id="valyti">Išvalyti</button>
+  <span id="skaicius" style="margin-left:10px; color:#666;">Taškiukų: 0</span>
+</p>
+
+<h2>Ką daro kiekviena eilutė</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">💡 <code>event.pageX</code> — pelės X koordinatė nuo puslapio pradžios.
+Atimame 4, nes taškiukas yra 8px pločio — taip jo <strong>vidurys</strong> atsiduria ten,
+kur paspaudei, o ne kairysis viršutinis kampas.</p>
+
+<h2>Kitos svarbios koordinatės</h2>
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">Savybė</th>
+    <th style="text-align:left; padding:6px;">Nuo ko skaičiuojama</th>
+  </tr>
+  <tr><td style="padding:6px;"><code>event.clientX/Y</code></td><td style="padding:6px;">nuo <strong>matomos lango</strong> dalies (slenkant puslapį keičiasi)</td></tr>
+  <tr><td style="padding:6px;"><code>event.pageX/Y</code></td><td style="padding:6px;">nuo <strong>viso puslapio</strong> pradžios</td></tr>
+  <tr><td style="padding:6px;"><code>event.offsetX/Y</code></td><td style="padding:6px;">nuo <strong>paties elemento</strong> kampo</td></tr>
+</table>
+
+<h2>Mokymosi aplinka</h2>
+<p>Interaktyvi JavaScript įvykių mokymosi aplinka:
+<a href="https://domevents.dev/" target="_blank">https://domevents.dev/</a></p>
+
+<script>
+  const drobe = document.getElementById("drobe");
+  const skaicius = document.getElementById("skaicius");
+  const out = document.getElementById("out");
+
+  let kiek = 0;
+
+  drobe.addEventListener("click", (event) => {
+    // 1. Sukuriam naują elementą (jo dar nėra puslapyje)
+    let dot = document.createElement("div");
+
+    // 2. Priskiriam klasę — iš jos ateina dydis, spalva ir position: absolute
+    dot.className = "dot";
+
+    // 3. Nustatom vietą. offsetX/Y — koordinatės nuo paties rėmelio kampo.
+    //    Atimam 4, kad taškiuko VIDURYS būtų ten, kur paspausta.
+    dot.style.left = (event.offsetX - 4) + "px";
+    dot.style.top = (event.offsetY - 4) + "px";
+
+    // 4. Tik dabar elementas atsiranda puslapyje
+    drobe.appendChild(dot);
+
+    kiek++;
+    skaicius.textContent = "Taškiukų: " + kiek;
+
+    out.textContent =
+      "let dot = document.createElement('div');\n" +
+      "   → sukurtas <div>, bet puslapyje jo DAR NĖRA\n\n" +
+      "dot.className = 'dot';\n" +
+      "   → priskirta klasė, iš CSS ateina dydis ir spalva\n\n" +
+      "dot.style.left = (event.offsetX - 4) + 'px';\n" +
+      "   → " + (event.offsetX - 4) + "px   (offsetX = " + event.offsetX + ")\n\n" +
+      "dot.style.top = (event.offsetY - 4) + 'px';\n" +
+      "   → " + (event.offsetY - 4) + "px   (offsetY = " + event.offsetY + ")\n\n" +
+      "drobe.appendChild(dot);\n" +
+      "   → TIK DABAR taškiukas atsirado puslapyje\n\n" +
+      "Palyginimui tas pats paspaudimas kitose skalėse:\n" +
+      "   clientX/Y = " + event.clientX + " / " + event.clientY + "   (nuo lango)\n" +
+      "   pageX/Y   = " + event.pageX + " / " + event.pageY + "   (nuo puslapio)\n" +
+      "   offsetX/Y = " + event.offsetX + " / " + event.offsetY + "   (nuo rėmelio) ← naudojam šias";
+  });
+
+  document.getElementById("valyti").addEventListener("click", () => {
+    drobe.innerHTML = "";       // ištrina visus vaikinius elementus
+    kiek = 0;
+    skaicius.textContent = "Taškiukų: 0";
+    out.textContent = "drobe.innerHTML = '';  → visi taškiukai ištrinti";
+  });
+</script>
+
+</body>
+</html>

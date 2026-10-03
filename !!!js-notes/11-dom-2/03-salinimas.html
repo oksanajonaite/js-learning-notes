@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>03 · Elementų šalinimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>03 · DOM elementų šalinimas</h1>
+
+<h2>remove()</h2>
+
+<pre>&lt;div&gt;
+&lt;p id="p1"&gt;This is a paragraph.&lt;/p&gt;
+&lt;p id="p2"&gt;This is another paragraph.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;button onclick="myFunction()"&gt;Remove Element&lt;/button&gt;
+
+&lt;script&gt;
+function myFunction() {
+  var elmnt = document.getElementById("p1");
+  elmnt.remove();
+}
+&lt;/script&gt;</pre>
+
+<div class="demo">
+  <div id="demo1">
+    <p id="p1">This is a paragraph.</p>
+    <p id="p2">This is another paragraph.</p>
+  </div>
+  <button onclick="myFunction()">Remove Element</button>
+  <button onclick="atstatyti1()">↺ Atstatyti</button>
+</div>
+
+<h2>Senesnis būdas: removeChild()</h2>
+
+<p>Prieš atsirandant <code>remove()</code>, elementą šalinti galėjo tik jo <strong>tėvinis</strong>
+elementas:</p>
+
+<pre>var parent = document.getElementById("div1");
+var child = document.getElementById("p1");
+parent.removeChild(child);
+
+// arba surandant tėvą automatiškai:
+child.parentNode.removeChild(child);</pre>
+
+<div class="demo">
+  <div id="demo2">
+    <p id="p3">Pirma pastraipa</p>
+    <p id="p4">Antra pastraipa</p>
+  </div>
+  <button onclick="removeChildDemo()">parent.removeChild(child)</button>
+  <button onclick="atstatyti2()">↺ Atstatyti</button>
+</div>
+
+<p class="tip">💡 <code>remove()</code> yra trumpesnis ir aiškesnis — naujame kode naudok jį.
+<code>removeChild()</code> verta pažinti, nes jį dar sutiksi senesniame kode, ir jis
+<strong>grąžina</strong> pašalintą elementą (todėl jį galima kur nors perkelti).</p>
+
+<h2>Visų vaikų išvalymas</h2>
+
+<pre>// 1. Greičiausia
+element.innerHTML = "";
+
+// 2. Po vieną
+while (element.firstChild) {
+  element.removeChild(element.firstChild);
+}
+
+// 3. Su replaceChildren (naujausia)
+element.replaceChildren();</pre>
+
+<div class="demo">
+  <div id="demo3">
+    <p>Pirma</p><p>Antra</p><p>Trečia</p>
+  </div>
+  <button onclick="valyti()">Išvalyti viską</button>
+  <button onclick="atstatyti3()">↺ Atstatyti</button>
+</div>
+
+<h2>Rezultatas</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">⚠️ Pašalintas elementas iš puslapio dingsta, bet jei jį buvai įsiminęs kintamajame,
+objektas lieka atmintyje — jį galima pridėti atgal.</p>
+
+<script>
+  const demo1 = document.getElementById("demo1");
+  const demo2 = document.getElementById("demo2");
+  const demo3 = document.getElementById("demo3");
+  const pr1 = demo1.innerHTML, pr2 = demo2.innerHTML, pr3 = demo3.innerHTML;
+  const out = document.getElementById("out");
+
+  function myFunction() {
+    var elmnt = document.getElementById("p1");
+    if (!elmnt) {
+      out.textContent = "p1 jau pašalintas — paspausk „Atstatyti“";
+      return;
+    }
+    elmnt.remove();
+
+    out.textContent =
+      "elmnt.remove()\n" +
+      "   → p1 pašalintas iš puslapio\n" +
+      "   → elmnt.parentNode = " + elmnt.parentNode + "  (null = nebeturi tėvo)\n" +
+      "   → bet elmnt kintamajame objektas LIEKA: " + elmnt.outerHTML + "\n\n" +
+      "demo1 vaikų liko: " + demo1.children.length;
+  }
+
+  function removeChildDemo() {
+    var parent = document.getElementById("demo2");
+    var child = document.getElementById("p3");
+    if (!child) {
+      out.textContent = "p3 jau pašalintas — paspausk „Atstatyti“";
+      return;
+    }
+    const grazintas = parent.removeChild(child);
+
+    out.textContent =
+      "parent.removeChild(child)\n" +
+      "   → GRĄŽINA pašalintą elementą: " + grazintas.outerHTML + "\n" +
+      "   → todėl jį galima perkelti kitur\n\n" +
+      "demo2 vaikų liko: " + demo2.children.length;
+  }
+
+  function valyti() {
+    const buvo = demo3.children.length;
+    demo3.innerHTML = "";
+    out.textContent =
+      "element.innerHTML = ''\n" +
+      "   → buvo vaikų: " + buvo + "\n" +
+      "   → liko vaikų: " + demo3.children.length;
+  }
+
+  function atstatyti1() { demo1.innerHTML = pr1; out.textContent = ""; }
+  function atstatyti2() { demo2.innerHTML = pr2; out.textContent = ""; }
+  function atstatyti3() { demo3.innerHTML = pr3; out.textContent = ""; }
+</script>
+
+</body>
+</html>

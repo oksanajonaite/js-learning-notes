@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>02 · Elementų radimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>02 · HTML elementų radimas</h1>
+<p>Norint dirbti su HTML elementais, nustatyti ar pakeisti jų parametrus, juos reikia <strong>surasti</strong>.</p>
+
+<h2>1. Pagal id — getElementById</h2>
+<div class="demo">
+  <div id="elem">
+    <div id="elem-content">Element</div>
+  </div>
+</div>
+<pre>let elem = document.getElementById('elem');
+elem.style.background = 'red';</pre>
+<button onclick="document.getElementById('elem').style.background='red'">Nuspalvinti raudonai</button>
+
+<h2>2. Pagal elemento pavadinimą — getElementsByTagName</h2>
+<div class="demo" id="main">
+  <p>The DOM is very useful.</p>
+  <p>This example demonstrates the <b>getElementsByTagName</b> method.</p>
+</div>
+<pre>var x = document.getElementById("main");
+var y = x.getElementsByTagName("p");
+... y[0].innerHTML;</pre>
+<p>Kadangi elementų gali būti keli, grąžinama <strong>elementų kolekcija</strong>, ir norėdami rasti
+konkretų elementą nurodome jo <strong>indeksą</strong> (kaip masyve).</p>
+
+<h2>3. Pagal klasės pavadinimą — getElementsByClassName</h2>
+<div class="demo">
+  <p class="intro">The DOM is very useful.</p>
+  <p class="intro">This example demonstrates the <b>getElementsByClassName</b> method.</p>
+</div>
+<pre>var x = document.getElementsByClassName("intro");
+... x[0].innerHTML;</pre>
+
+<h2>4. Pagal css selektorių — querySelector / querySelectorAll</h2>
+<div class="demo">
+  <ul><li>The</li><li>test</li></ul>
+  <ul><li>has</li><li>passed</li></ul>
+</div>
+<pre>let elements = document.querySelectorAll('ul &gt; li:last-child');
+for (let elem of elements) { alert(elem.innerHTML); } // "test", "passed"</pre>
+
+<h2>Rezultatai</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">⚠️ <code>getElementsBy*</code> grąžina <strong>gyvą</strong> (live) kolekciją: pasikeitus elementų
+kiekiui HTML'e, rezultatas atsinaujina. <code>querySelectorAll</code> grąžina <strong>statišką</strong> —
+jis neatsinaujina.</p>
+
+<script>
+  const out = document.getElementById("out");
+  const log = (t) => (out.textContent += t + "\n");
+
+  // --- 1. getElementById: grąžina VIENĄ elementą arba null ---
+  let elem = document.getElementById("elem");
+  log("getElementById('elem')        → " + elem.tagName + " (vienas elementas)");
+  log("getElementById('nera')        → " + document.getElementById("nera"));
+
+  // --- 2. getElementsByTagName: kolekcija ---
+  var x = document.getElementById("main");
+  var y = x.getElementsByTagName("p");
+  log("");
+  log("getElementsByTagName('p')     → rasta " + y.length);
+  log("  y[0].innerHTML              → " + y[0].innerHTML);
+
+  // --- 3. getElementsByClassName: kolekcija ---
+  var c = document.getElementsByClassName("intro");
+  log("");
+  log("getElementsByClassName('intro') → rasta " + c.length);
+  log("  x[0].innerHTML              → " + c[0].innerHTML);
+
+  // --- 4. querySelector / querySelectorAll ---
+  let elements = document.querySelectorAll("ul > li:last-child");
+  log("");
+  log("querySelectorAll('ul > li:last-child') → rasta " + elements.length);
+  for (let el of elements) log("  " + el.innerHTML);
+
+  // querySelector grąžina PIRMĄ atitinkantį elementą
+  log("querySelector('ul > li')      → " + document.querySelector("ul > li").innerHTML);
+
+  // --- ⚠️ Kolekcija NĖRA masyvas ---
+  log("");
+  log("Array.isArray(y)              → " + Array.isArray(y) + "  ⚠️");
+  log("y.map ? ...                   → " + (y.map ? "yra" : "NĖRA map metodo ⚠️"));
+  log("Array.from(y).map(...)        → veikia ✅");
+  log("  " + Array.from(y).map((p) => p.tagName).join(", "));
+
+  // --- Gyva vs statiška kolekcija ---
+  const gyva = document.getElementsByClassName("intro");
+  const statiska = document.querySelectorAll(".intro");
+  const naujas = document.createElement("p");
+  naujas.className = "intro";
+  naujas.textContent = "(šią pastraipą ką tik pridėjo skriptas)";
+  document.querySelectorAll(".demo")[2].appendChild(naujas);
+  log("");
+  log("Pridėjus naują .intro elementą:");
+  log("  getElementsByClassName → " + gyva.length + " (atsinaujino ✅)");
+  log("  querySelectorAll       → " + statiska.length + " (liko senas ⚠️)");
+</script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>06 · Navigavimas DOM medžiu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>06 · Navigavimas DOM medžiu</h1>
+
+<p>Suradus vieną elementą, nuo jo galima „keliauti“ pas kaimynus, tėvus ir vaikus.</p>
+
+<pre>&lt;ul&gt;
+&lt;li&gt;node&lt;/li&gt;
+&lt;li&gt;&lt;span&gt;node&lt;/span&gt;&lt;a href="#"&gt;node&lt;/a&gt;&lt;p&gt;node&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;node&lt;/li&gt;
+&lt;/ul&gt;</pre>
+
+<pre>                        &lt;ul&gt;
+         parentNode ↗   parentNode ↑   ↖ parentNode
+    &lt;li&gt; ←previousSibling→ &lt;li&gt; ←nextSibling→ &lt;li&gt;
+                             ↓
+          childNodes[0]  childNodes[1]  childNodes[2]
+             &lt;span&gt;        &lt;a&gt;           &lt;p&gt;
+           firstChild                   lastChild</pre>
+
+<h2>⚠️ Du rinkiniai savybių</h2>
+
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">Imami VISI mazgai<br><small>elementai, tekstai ir enter</small></th>
+    <th style="text-align:left; padding:6px;">Imami TIK html elementai</th>
+  </tr>
+  <tr><td style="padding:6px;"><code>childNodes</code></td><td style="padding:6px;"><code>children</code></td></tr>
+  <tr><td style="padding:6px;"><code>firstChild</code></td><td style="padding:6px;"><code>firstElementChild</code></td></tr>
+  <tr><td style="padding:6px;"><code>lastChild</code></td><td style="padding:6px;"><code>lastElementChild</code></td></tr>
+  <tr><td style="padding:6px;"><code>nextSibling</code></td><td style="padding:6px;"><code>nextElementSibling</code></td></tr>
+  <tr><td style="padding:6px;"><code>previousSibling</code></td><td style="padding:6px;"><code>previousElementSibling</code></td></tr>
+  <tr><td style="padding:6px;"><code>parentNode</code></td><td style="padding:6px;"><code>parentElement</code></td></tr>
+</table>
+
+<p class="tip">💡 Praktikoje beveik visada reikia <strong>Element</strong> versijų — kitaip
+pataikysi į tarpą tarp žymių, o ne į elementą.</p>
+
+<h2>Pavyzdys iš skaidrės</h2>
+
+<pre>&lt;div id="main"&gt;
+    &lt;h1 id="title"&gt;My Heading&lt;/h1&gt;
+    &lt;p id="hint"&gt;&lt;span&gt;This is some text.&lt;/span&gt;&lt;/p&gt;&lt;hr&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+var title = document.getElementById("title");
+alert(title.previousSibling.nodeName);  // Outputs: #text
+
+var hint = document.getElementById("hint");
+alert(hint.nextSibling.nodeName);       // Outputs: HR
+&lt;/script&gt;</pre>
+
+<div class="demo">
+  <div id="main">
+    <h1 id="title" style="font-size:1.2rem;">My Heading</h1>
+    <p id="hint"><span>This is some text.</span></p><hr>
+  </div>
+</div>
+
+<p><strong><code>nodeName</code></strong> yra read-only savybė, grąžinanti node vardą kaip string.</p>
+
+<h2>Rezultatai</h2>
+<div class="out" id="out"></div>
+
+<h2>Pabandyk pats</h2>
+
+<div class="demo">
+  <ul id="sarasas">
+    <li>Pirmas</li>
+    <li id="vidurinis" style="background:#fff3cd; padding:2px 6px;">Vidurinis (nuo jo keliaujam)</li>
+    <li>Trečias</li>
+  </ul>
+  <button onclick="keliauk('parentElement')">parentElement</button>
+  <button onclick="keliauk('previousElementSibling')">previousElementSibling</button>
+  <button onclick="keliauk('nextElementSibling')">nextElementSibling</button>
+  <button onclick="keliauk('previousSibling')">previousSibling</button>
+  <button onclick="keliauk('nextSibling')">nextSibling</button>
+</div>
+<div class="out" id="out2">(paspausk mygtuką)</div>
+
+<script>
+  const out = document.getElementById("out");
+
+  // --- Pavyzdys iš skaidrės ---
+  var title = document.getElementById("title");
+  var hint = document.getElementById("hint");
+
+  out.textContent =
+    "title.previousSibling.nodeName        → " + title.previousSibling.nodeName +
+    "   (#text = tarpas/enter prieš <h1>)\n" +
+    "title.previousElementSibling          → " + title.previousElementSibling +
+    "   (null = prieš jį elementų nėra)\n\n" +
+    "hint.nextSibling.nodeName             → " + hint.nextSibling.nodeName + "\n" +
+    "hint.nextElementSibling.nodeName      → " + hint.nextElementSibling.nodeName + "\n\n" +
+    "⚠️ Čia <hr> eina IŠ KARTO po </p>, be tarpo, todėl abu rodo HR.\n" +
+    "   Jei tarp jų būtų enter, nextSibling rodytų #text.\n\n" +
+    "main.childNodes.length  → " + document.getElementById("main").childNodes.length +
+    "   (su tekstais ir enter)\n" +
+    "main.children.length    → " + document.getElementById("main").children.length +
+    "   (tik elementai)\n\n" +
+    "Visi main vaikai per childNodes:\n" +
+    Array.from(document.getElementById("main").childNodes)
+      .map((n, i) => "  " + i + ": " + n.nodeName + "  (nodeType " + n.nodeType + ")")
+      .join("\n") +
+    "\n\nnodeType: 1 = elementas, 3 = tekstas, 8 = komentaras";
+
+  // --- Interaktyvi dalis ---
+  const out2 = document.getElementById("out2");
+
+  function keliauk(savybe) {
+    const nuo = document.getElementById("vidurinis");
+    const rastas = nuo[savybe];
+
+    if (rastas === null) {
+      out2.textContent = "vidurinis." + savybe + "\n   → null (tokio kaimyno nėra)";
+      return;
+    }
+
+    out2.textContent =
+      "vidurinis." + savybe + "\n" +
+      "   nodeName  → " + rastas.nodeName + "\n" +
+      "   nodeType  → " + rastas.nodeType +
+      (rastas.nodeType === 1 ? "  (elementas)" : rastas.nodeType === 3 ? "  (tekstas ⚠️)" : "") + "\n" +
+      "   turinys   → '" + (rastas.textContent || "").trim().slice(0, 40) + "'";
+  }
+</script>
+
+</body>
+</html>

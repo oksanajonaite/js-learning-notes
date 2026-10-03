@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- 1. Change Heading Text -->
+    <h1 id="main-title">Old title</h1>
+    <button id="change-title-btn">Change title</button>
+
+    <!-- 2. Highlight All List Items -->
+    <ul id="todo-list">
+      <li>Learn JS</li>
+      <li>Practice DOM</li>
+      <li>Build a project</li>
+    </ul>
+    <button id="highlight-btn">Highlight items</button>
+
+    <!-- 3. Toggle Dark Mode Class -->
+    <div id="page">
+      <p>Some content on the page...</p>
+      <button id="toggle-theme-btn">Toggle dark mode</button>
+    </div>
+
+    <!-- 4. Add New List Item from Input -->
+    <input id="item-input" type="text" placeholder="New item" />
+    <button id="add-item-btn">Add item</button>
+
+    <ul id="items">
+      <li>Example item</li>
+    </ul>
+
+    <!-- 5. Change Image `src` and `alt` -->
+    <img id="preview" src="img1.png" alt="First image" width="200" />
+    <button id="change-img-btn">Change image</button>
+
+    <!-- 6. Show/Hide Paragraph -->
+    <p id="secret-text">This is a secret paragraph.</p>
+    <button id="toggle-text-btn">Hide</button>
+    <p></p>
+
+    <!-- 7. Mouseover Highlight Box -->
+    <div id="box" style="width: 150px; height: 150px; border: 1px solid black">
+      Hover me
+    </div>
+
+    <!-- 8. Live Character Counter -->
+    <textarea id="message" rows="4" cols="30"></textarea>
+    <p>Characters: <span id="char-count">0</span></p>
+
+    <!-- 9. Simple Tab Switcher -->
+     <button class="tab-btn" data-target="tab1">Tab 1</button>
+     <button class="tab-btn" data-target="tab2">Tab 2</button>
+
+    <div id="tab1" class="tab">Content of tab 1</div>
+    <div id="tab2" class="tab">Content of tab 2</div>
+
+
+  </body>
+</html>

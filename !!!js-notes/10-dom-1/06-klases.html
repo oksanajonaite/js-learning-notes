@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>06 · Klasių keitimas</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .hell   { color: #b8693a; font-weight: bold; }
+  .bell   { color: #6b7c4a; font-style: italic; }
+  .active { background: #fff3cd; padding: 4px 8px; border-radius: 4px; }
+  .new    { border-left: 4px solid #0d6efd; padding-left: 10px; }
+</style>
+</head>
+<body>
+
+<h1>06 · Elementų klasės keitimas</h1>
+
+<h2>.className — perrašymas</h2>
+
+<p><code>.className</code> parodo, kokia elemento klasė. Galima šią savybę keisti.</p>
+
+<pre>&lt;body class="main page"&gt;
+  &lt;script&gt;
+    alert(document.body.className); // main page
+  &lt;/script&gt;
+&lt;/body&gt;</pre>
+
+<pre>&lt;p id="p1" class="hell"&gt;Hello World!&lt;/p&gt;
+
+let elem = document.getElementById("p1");
+console.log(elem.className);   // išvedam į konsolę klasės vardą
+elem.className = "bell";       // pakeičiam, PERRAŠOM klasės vardą
+console.log(elem.className);   // išvedam naują klasės vardą</pre>
+
+<div class="demo">
+  <p id="p1" class="hell">Hello World!</p>
+  <button onclick="p1.className = 'bell'; rodyk()">className = "bell"</button>
+  <button onclick="p1.className = 'hell'; rodyk()">↺ Atstatyti</button>
+</div>
+
+<p class="tip">⚠️ <code>className = "bell"</code> <strong>ištrina visas</strong> buvusias klases.
+Jei elementas turėjo <code>class="hell active"</code>, po šios eilutės liks tik <code>bell</code>.</p>
+
+<h2>.classList — pridėjimas ir kt.</h2>
+
+<p><code>.classList</code> tai elemento <strong>klasių sąrašas</strong>
+(nes elementas gali turėti ne vieną klasę).</p>
+
+<pre>div.classList.add('new');
+// adds class "new" to your new div
+
+div.classList.remove('new');
+// remove "new" class from div
+
+div.classList.toggle('active');
+// if div doesn't have class "active" then add it, or if it does, then remove it</pre>
+
+<pre>&lt;p id="p2" class="hell"&gt;Hello World!&lt;/p&gt;
+
+let elem = document.getElementById("p2");
+elem.classList.add("bell");        // prideda naują klasę
+console.log(elem.classList[0]);    // parodo 1-ą klasę iš sąrašo, t.y. hell</pre>
+
+<div class="demo">
+  <p id="p2" class="hell">Hello World!</p>
+  <button onclick="p2.classList.add('new'); rodyk()">classList.add("new")</button>
+  <button onclick="p2.classList.remove('new'); rodyk()">classList.remove("new")</button>
+  <button onclick="p2.classList.toggle('active'); rodyk()">classList.toggle("active")</button>
+  <button onclick="p2.className = 'hell'; rodyk()">↺ Atstatyti</button>
+</div>
+
+<h2>Dabartinė būsena</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">💡 <code>toggle()</code> naudojamas dažniausiai — juo įjungiamos ir išjungiamos
+būsenos: meniu atidarymas, tamsi tema, pažymėta eilutė.</p>
+
+<script>
+  const p1 = document.getElementById("p1");
+  const p2 = document.getElementById("p2");
+  const out = document.getElementById("out");
+
+  function rodyk() {
+    out.textContent =
+      "p1.className          → '" + p1.className + "'\n" +
+      "p2.className          → '" + p2.className + "'\n" +
+      "p2.classList          → [" + Array.from(p2.classList).join(", ") + "]\n" +
+      "p2.classList.length   → " + p2.classList.length + "\n" +
+      "p2.classList[0]       → " + p2.classList[0] + "\n" +
+      "p2.classList.contains('active') → " + p2.classList.contains("active") + "\n" +
+      "\n" +
+      "className  → VISŲ klasių tekstas, priskyrimas PERRAŠO viską\n" +
+      "classList  → sąrašas su metodais add / remove / toggle / contains ✅";
+  }
+
+  rodyk();
+</script>
+
+</body>
+</html>

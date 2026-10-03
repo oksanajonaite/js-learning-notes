@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>02 · insertBefore</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>02 · Elemento vietos nurodymas — insertBefore</h1>
+
+<p>Įterpiant naują elementą, galima nurodyti <strong>jo vietą</strong>:</p>
+
+<pre>element.insertBefore(para, child);
+   ↑            ↑      ↑
+Į kurį       Kurį    Prieš kurį
+elementą     elementą  elementą
+įterpiam     įterpiam  įterpiam</pre>
+
+<h2>Pavyzdys</h2>
+
+<pre>&lt;div id="div1"&gt;
+&lt;p id="p1"&gt;This is a paragraph.&lt;/p&gt;
+&lt;p id="p2"&gt;This is another paragraph.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+var para = document.createElement("p");
+var node = document.createTextNode("This is new.");
+para.appendChild(node);
+
+var element = document.getElementById("div1");
+var child = document.getElementById("p1");
+element.insertBefore(para, child);
+&lt;/script&gt;</pre>
+
+<div class="demo">
+  <div id="div1">
+    <p id="p1">This is a paragraph.</p>
+    <p id="p2">This is another paragraph.</p>
+  </div>
+  <button onclick="prieshP1()">insertBefore(para, p1)</button>
+  <button onclick="prieshP2()">insertBefore(para, p2)</button>
+  <button onclick="gale()">insertBefore(para, null) — į galą</button>
+  <button onclick="atstatyti()">↺ Atstatyti</button>
+</div>
+
+<h2>Rezultatas</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">💡 Jei antras argumentas yra <code>null</code>, elementas įdedamas
+<strong>į galą</strong> — tada <code>insertBefore(para, null)</code> veikia lygiai kaip
+<code>appendChild(para)</code>.</p>
+
+<h2>Naujesni, paprastesni metodai</h2>
+
+<p>Juos rašyti patogiau, nes nereikia kreiptis į <strong>tėvinį</strong> elementą —
+dirbi tiesiai su kaimynu:</p>
+
+<pre>// senasis būdas — reikia TĖVINIO elemento
+element.insertBefore(para, child);
+
+// naujasis — dirbi su pačiu elementu
+child.before(para);    // prieš child
+child.after(para);     // po child
+child.replaceWith(para); // vietoje child</pre>
+
+<div class="demo">
+  <div id="div2" style="border:1px solid #ccc; padding:8px;">
+    <p id="vidurys" style="background:#fff3cd; padding:4px;">VIDURINĖ pastraipa (su ja dirbam)</p>
+  </div>
+  <button onclick="before()">vidurys.before()</button>
+  <button onclick="after()">vidurys.after()</button>
+  <button onclick="atstatyti2()">↺ Atstatyti</button>
+</div>
+
+<script>
+  const div1 = document.getElementById("div1");
+  const div2 = document.getElementById("div2");
+  const pradinis1 = div1.innerHTML;
+  const pradinis2 = div2.innerHTML;
+  const out = document.getElementById("out");
+
+  // Pagalbinė: sukuria naują pastraipą taip, kaip skaidrėje
+  function naujaPastraipa() {
+    var para = document.createElement("p");
+    var node = document.createTextNode("This is new.");
+    para.appendChild(node);
+    para.style.background = "#d4edda";
+    para.style.padding = "4px";
+    return para;
+  }
+
+  function rodyk(komanda) {
+    out.textContent =
+      komanda + "\n\n" +
+      "div1 vaikai dabar (iš eilės):\n" +
+      Array.from(div1.children)
+        .map((el, i) => "  " + i + ": <" + el.tagName.toLowerCase() + "> " + el.textContent)
+        .join("\n");
+  }
+
+  function prieshP1() {
+    var element = document.getElementById("div1");
+    var child = document.getElementById("p1");
+    element.insertBefore(naujaPastraipa(), child);
+    rodyk("element.insertBefore(para, child)   // child = p1 → naujas atsidūrė PIRMAS");
+  }
+
+  function prieshP2() {
+    div1.insertBefore(naujaPastraipa(), document.getElementById("p2"));
+    rodyk("element.insertBefore(para, p2)   // naujas atsidūrė TARP p1 ir p2");
+  }
+
+  function gale() {
+    div1.insertBefore(naujaPastraipa(), null);
+    rodyk("element.insertBefore(para, null)   // null → į GALĄ, kaip appendChild");
+  }
+
+  function atstatyti() {
+    div1.innerHTML = pradinis1;
+    out.textContent = "";
+  }
+
+  function before() {
+    const p = document.createElement("p");
+    p.textContent = "before() — esu PRIEŠ vidurinę";
+    p.style.color = "#b8693a";
+    document.getElementById("vidurys").before(p);
+  }
+
+  function after() {
+    const p = document.createElement("p");
+    p.textContent = "after() — esu PO vidurinės";
+    p.style.color = "#6b7c4a";
+    document.getElementById("vidurys").after(p);
+  }
+
+  function atstatyti2() {
+    div2.innerHTML = pradinis2;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>04 · Elementų pakeitimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>04 · DOM elementų pakeitimas</h1>
+
+<h2>replaceChild()</h2>
+
+<pre>&lt;div id="div1"&gt;
+&lt;p id="p1"&gt;This is a paragraph.&lt;/p&gt;
+&lt;p id="p2"&gt;This is another paragraph.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+var parent = document.getElementById("div1");
+var child = document.getElementById("p1");
+var para = document.createElement("p");
+var node = document.createTextNode("This is new.");
+para.appendChild(node);
+parent.replaceChild(para, child);
+&lt;/script&gt;</pre>
+
+<pre>parent.replaceChild(para, child);
+  ↑                   ↑       ↑
+Kuriame elem.      Kuo      Kurį elem.
+vyks pokyčiai      keisim   keisim
+                 (naujas)  (senas)</pre>
+
+<div class="demo">
+  <div id="div1">
+    <p id="p1">This is a paragraph.</p>
+    <p id="p2">This is another paragraph.</p>
+  </div>
+  <button onclick="keisti()">replaceChild(para, p1)</button>
+  <button onclick="atstatyti()">↺ Atstatyti</button>
+</div>
+
+<h2>Rezultatas</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">⚠️ Argumentų tvarka lengvai supainiojama: <strong>pirma NAUJAS, paskui SENAS</strong>.
+Įsimink taip: „pakeisk <em>šituo</em> — <em>šitą</em>“.</p>
+
+<h2>Naujesnis būdas: replaceWith()</h2>
+
+<p>Nereikia kreiptis į tėvinį elementą — dirbi tiesiai su tuo, kurį keiti:</p>
+
+<pre>// senasis: per TĖVINĮ elementą
+parent.replaceChild(para, child);
+
+// naujasis: pats elementas
+child.replaceWith(para);</pre>
+
+<div class="demo">
+  <div id="div2" style="border:1px solid #ccc; padding:8px;">
+    <p id="senas" style="background:#f8d7da; padding:4px;">Senas elementas</p>
+  </div>
+  <button onclick="replaceWithDemo()">senas.replaceWith(naujas)</button>
+  <button onclick="atstatyti2()">↺ Atstatyti</button>
+</div>
+
+<h2>Kada ko reikia</h2>
+
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">Noriu...</th>
+    <th style="text-align:left; padding:6px;">Naudoju</th>
+  </tr>
+  <tr><td style="padding:6px;">pakeisti tik <strong>tekstą</strong></td><td style="padding:6px;"><code>elem.textContent = "..."</code></td></tr>
+  <tr><td style="padding:6px;">pakeisti <strong>vidinį HTML</strong></td><td style="padding:6px;"><code>elem.innerHTML = "..."</code></td></tr>
+  <tr><td style="padding:6px;">pakeisti <strong>visą elementą</strong></td><td style="padding:6px;"><code>elem.replaceWith(naujas)</code></td></tr>
+  <tr><td style="padding:6px;">pakeisti <strong>visus vaikus</strong></td><td style="padding:6px;"><code>elem.replaceChildren(a, b)</code></td></tr>
+</table>
+
+<p class="tip">💡 Dažniausiai tereikia <code>textContent</code> — viso elemento keisti nebūtina,
+jei keičiasi tik jo turinys.</p>
+
+<script>
+  const div1 = document.getElementById("div1");
+  const div2 = document.getElementById("div2");
+  const pr1 = div1.innerHTML, pr2 = div2.innerHTML;
+  const out = document.getElementById("out");
+
+  function keisti() {
+    var parent = document.getElementById("div1");
+    var child = document.getElementById("p1");
+    if (!child) {
+      out.textContent = "p1 jau pakeistas — paspausk „Atstatyti“";
+      return;
+    }
+
+    var para = document.createElement("p");
+    var node = document.createTextNode("This is new.");
+    para.appendChild(node);
+    para.style.background = "#d4edda";
+    para.style.padding = "4px";
+
+    const senas = parent.replaceChild(para, child);
+
+    out.textContent =
+      "parent.replaceChild(para, child)\n" +
+      "   para  = naujas elementas → " + para.outerHTML.slice(0, 60) + "\n" +
+      "   child = senas elementas  → " + senas.outerHTML + "\n\n" +
+      "replaceChild GRĄŽINA pašalintą (seną) elementą,\n" +
+      "todėl jį galima įsiminti ir vėliau grąžinti atgal.\n\n" +
+      "div1 vaikai dabar:\n" +
+      Array.from(div1.children)
+        .map((el, i) => "  " + i + ": " + el.textContent)
+        .join("\n");
+  }
+
+  function replaceWithDemo() {
+    const senas = document.getElementById("senas");
+    if (!senas) {
+      out.textContent = "jau pakeista — paspausk „Atstatyti“";
+      return;
+    }
+    const naujas = document.createElement("p");
+    naujas.textContent = "Naujas elementas (replaceWith)";
+    naujas.style.background = "#d4edda";
+    naujas.style.padding = "4px";
+    senas.replaceWith(naujas);
+
+    out.textContent =
+      "senas.replaceWith(naujas)\n" +
+      "   → nieko negrąžina (undefined)\n" +
+      "   → bet nereikia ieškoti tėvinio elemento ✅";
+  }
+
+  function atstatyti() { div1.innerHTML = pr1; out.textContent = ""; }
+  function atstatyti2() { div2.innerHTML = pr2; out.textContent = ""; }
+</script>
+
+</body>
+</html>

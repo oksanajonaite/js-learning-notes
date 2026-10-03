@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>01 · DOM medis</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>01 · DOM medis ir window objektas</h1>
+
+<p><strong>DOM – Document Object Model.</strong> Tai būdas JavaScript'ui pasiekti HTML elementus:
+keisti puslapio turinį, keisti stilių, reaguoti į vartotojo veiksmus.</p>
+
+<h2>window — root objektas</h2>
+<pre>                    window
+      ┌───────────────┼───────────────┐
+     DOM             BOM          JavaScript
+   document       navigator        Object
+                  screen           Array
+                  location         Function
+                  frames
+                  history
+                  XMLHttpRequest</pre>
+
+<h2>HTML virsta medžiu</h2>
+<pre>&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;About elk&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  The truth about elk.
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<p>HTML elementai, jų tekstai, tarpai ir perėjimai į kitą eilutę (tarp elementų)
+sudaro <strong>DOM medį</strong>. Elementai vadinami <strong>mazgais (DOM nodes)</strong>.</p>
+
+<p>Dažniausiai dirbame su:</p>
+<ul>
+  <li><code>document</code> – pagrindiniu DOM mazgu</li>
+  <li><strong>element nodes</strong> – HTML elementais</li>
+  <li><strong>text nodes</strong> – tekstas, enter ir tarpai</li>
+  <li>kartais dar su komentarais</li>
+</ul>
+
+<h2>Paleisk ir pažiūrėk</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">💡 Paspausk <kbd>F12</kbd> → <em>Elements</em>, kad pamatytum šio puslapio DOM medį,
+ir <em>Console</em>, kad pats pabandytum komandas.</p>
+
+<script>
+  const out = document.getElementById("out");
+  const log = (t) => (out.textContent += t + "\n");
+
+  // window yra root objektas — document yra jo savybė
+  log("window.document === document  →  " + (window.document === document));
+
+  // BOM — informacija apie naršyklę ir puslapio adresą
+  log("navigator.language            →  " + navigator.language);
+  log("navigator.cookieEnabled       →  " + navigator.cookieEnabled);
+  log("screen.width x screen.height  →  " + screen.width + " x " + screen.height);
+
+  // Pagrindiniai document mazgai
+  log("");
+  log("document.title                →  " + document.title);
+  log("document.body.tagName         →  " + document.body.tagName);
+  log("document.documentElement      →  " + document.documentElement.tagName + " (<html>)");
+
+  // Mazgų tipai: 1 = element, 3 = text, 8 = comment
+  log("");
+  log("document.body.nodeType        →  " + document.body.nodeType + "  (1 = element node)");
+  log("Vaikinių mazgų kiekis:");
+  log("  childNodes (su tekstu/tarpais) → " + document.body.childNodes.length);
+  log("  children   (tik elementai)     → " + document.body.children.length);
+  log("⚠️ Skirtumas atsiranda dėl tarpų ir perėjimų į naują eilutę — jie irgi mazgai.");
+</script>
+
+</body>
+</html>

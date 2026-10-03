@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="tipsCalculator.js" defer></script>
+  </head>
+  <body>
+    <h1>Tip Calculator</h1>
+
+    <div>
+      <input id="billInput" type="number" placeholder="Bill amount"step="0.01"min="0"/>
+    </div>
+
+    <div>
+      <span id="percentLabel">0%</span>
+      <input id="tipSlider" type="range" min="0" max="100" value="0"/>
+    </div>
+
+    <div>
+      <span>Tip</span>
+      <span id="tipOutput">0.00 Eur</span>
+    </div>
+
+    <div>
+      <span>Total</span>
+      <span id="totalOutput">0.00 Eur</span>
+    </div>
+
+  </body>
+</html>

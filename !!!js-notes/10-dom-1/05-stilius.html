@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>05 · Stiliaus keitimas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>05 · Stiliaus savybių (CSS) keitimas</h1>
+
+<p>JavaScript gali keisti HTML elemento stilių. Suradęs elementą, jis gali:
+pakeisti spalvą, pakeisti tekstą, paslėpti arba parodyti elementą.</p>
+
+<pre>const div = document.createElement('div');
+
+div.style.color = 'blue';                                    // viena taisyklė
+div.style.cssText = 'color: blue; background: white';        // kelios taisyklės
+div.setAttribute('style', 'color: blue; background: white'); // kelios taisyklės</pre>
+
+<h2>Paprasčiausias pavyzdys</h2>
+<pre>&lt;p id="p2"&gt;Hello World!&lt;/p&gt;
+
+document.getElementById("p2").style.color = "blue";</pre>
+
+<div class="demo">
+  <p id="p2">Hello World!</p>
+  <button onclick="document.getElementById('p2').style.color = 'blue'">style.color = "blue"</button>
+</div>
+
+<h2>⚠️ CSS savybės JS'e rašomos camelCase</h2>
+
+<p>JS kalboje kitaip užrašomos css savybės: <strong>nenaudojant brūkšnio</strong> <code>-</code>,
+o sujungiant žodžius ir parašant juos <strong>camelCase</strong>.
+Pvz. <code>backgroundColor</code> (css <code>background-color</code>).
+Brūkšnio nenaudojame, nes tai <strong>atimties ženklas</strong>.</p>
+
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">CSS</th>
+    <th style="text-align:left; padding:6px;">JavaScript</th>
+  </tr>
+  <tr><td style="padding:6px;"><code>background-color</code></td><td style="padding:6px;"><code>style.backgroundColor</code></td></tr>
+  <tr><td style="padding:6px;"><code>font-size</code></td><td style="padding:6px;"><code>style.fontSize</code></td></tr>
+  <tr><td style="padding:6px;"><code>border-radius</code></td><td style="padding:6px;"><code>style.borderRadius</code></td></tr>
+  <tr><td style="padding:6px;"><code>text-align</code></td><td style="padding:6px;"><code>style.textAlign</code></td></tr>
+</table>
+<p>Visas sąrašas:
+<a href="https://www.w3schools.com/jsref/dom_obj_style.asp" target="_blank">w3schools.com/jsref/dom_obj_style.asp</a></p>
+
+<h2>Pavyzdžiai, ką galima padaryti</h2>
+
+<div class="demo">
+  <div id="root" style="padding: 20px; border: 1px solid #ccc;">Aš esu elementas #root</div>
+  <p style="margin-top:12px;">
+    <button onclick="root.style.backgroundColor = 'lightblue'">Fono spalva</button>
+    <button onclick="root.style.color = 'red'">Teksto spalva</button>
+    <button onclick="root.style.fontSize = '50px'">Teksto dydis</button>
+    <button onclick="root.style.borderRadius = '20px'">Užapvalinti kampus</button>
+    <button onclick="root.textContent = 'Naujas tekstas!'">Pakeisti tekstą</button>
+    <button onclick="root.style.display = 'none'">Paslėpti</button>
+    <button onclick="atstatyti()">↺ Atstatyti</button>
+  </p>
+</div>
+
+<pre>// ***JavaScript***
+let root = document.getElementById("root");
+
+root.style.backgroundColor = "lightblue";   // fono spalva
+root.style.color = "red";                   // teksto spalva
+root.style.fontSize = "50px";               // teksto dydis
+root.style.display = "none";                // paslėpti elementą
+root.textContent = "Naujas tekstas!";       // pakeisti tekstą
+img.src = "kitasPaveikslelis.jpg";          // pakeisti paveikslėlį
+root.style.borderRadius = "20px";           // užapvalinti kampus</pre>
+
+<h2>Keitimas paspaudus pelytę</h2>
+<pre>&lt;h1 id="id1"&gt;My Heading 1&lt;/h1&gt;
+
+&lt;button type="button"
+onclick="document.getElementById('id1').style.color = 'red'"&gt;
+Click Me!&lt;/button&gt;</pre>
+
+<div class="demo">
+  <h1 id="id1" style="font-size:1.6rem;">My Heading 1</h1>
+  <button type="button" onclick="document.getElementById('id1').style.color = 'red'">Click Me!</button>
+</div>
+
+<h2>Trys būdai — palyginimas</h2>
+<div class="out" id="out"></div>
+
+<p class="tip">⚠️ <code>elementas.style</code> mato tik <strong>inline</strong> stilių (tą, kuris rašomas
+pačioje žymėje). Iš CSS failo atėjusį stilių reikia skaityti su
+<code>getComputedStyle(elementas)</code>.</p>
+
+<script>
+  const root = document.getElementById("root");
+  const pradinis = root.style.cssText;
+  const pradinisTekstas = root.textContent;
+
+  function atstatyti() {
+    root.style.cssText = pradinis;
+    root.textContent = pradinisTekstas;
+  }
+
+  const out = document.getElementById("out");
+  const log = (t) => (out.textContent += t + "\n");
+
+  const a = document.createElement("div");
+  a.style.color = "blue";
+  log("1) div.style.color = 'blue'");
+  log("   → " + a.getAttribute("style"));
+
+  const b = document.createElement("div");
+  b.style.cssText = "color: blue; background: white";
+  log("");
+  log("2) div.style.cssText = 'color: blue; background: white'");
+  log("   → " + b.getAttribute("style"));
+
+  const c = document.createElement("div");
+  c.setAttribute("style", "color: blue; background: white");
+  log("");
+  log("3) div.setAttribute('style', 'color: blue; background: white')");
+  log("   → " + c.getAttribute("style"));
+
+  log("");
+  log("⚠️ 2 ir 3 būdai PERRAŠO visą style atributą, 1 būdas prideda vieną taisyklę.");
+
+  log("");
+  log("style vs getComputedStyle:");
+  log("  p2.style.fontSize          → '" + document.getElementById("p2").style.fontSize + "'  (tuščia — stilius ne inline)");
+  log("  getComputedStyle(p2).color → " + getComputedStyle(document.getElementById("p2")).color);
+
+  log("");
+  log("⚠️ Reikšmė VISADA yra tekstas su vienetais:");
+  log("  root.style.fontSize = 50     → neveikia (trūksta 'px')");
+  log("  root.style.fontSize = '50px' → veikia ✅");
+</script>
+
+</body>
+</html>

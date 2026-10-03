@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>05 · Praktinis pavyzdys</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .content {
+    background: #e7f1ff;
+    border-left: 4px solid #0d6efd;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h1>05 · Praktinis pavyzdys</h1>
+
+<p>Tipinis būdas, kaip JS'u įdedamas turinys į tuščią „konteinerį“.</p>
+
+<pre>&lt;!-- your html file: --&gt;
+&lt;body&gt;
+  &lt;h1&gt;
+     THE TITLE OF YOUR WEBPAGE
+  &lt;/h1&gt;
+  &lt;div id="container"&gt;&lt;/div&gt;
+&lt;/body&gt;</pre>
+
+<pre>// your javascript file
+const container = document.querySelector('#container');
+
+const content = document.createElement('div');
+content.classList.add('content');
+content.textContent = 'This is the glorious text-content!';
+
+container.appendChild(content);</pre>
+
+<div class="demo">
+  <h2 style="border:none; margin-top:0; padding-top:0;">THE TITLE OF YOUR WEBPAGE</h2>
+  <div id="container"></div>
+  <button onclick="ideti()">Paleisti kodą</button>
+  <button onclick="atstatyti()">↺ Išvalyti</button>
+</div>
+
+<h2>Keturi žingsniai</h2>
+<div class="out" id="out"></div>
+
+<h2>Kodėl taip, o ne innerHTML?</h2>
+
+<pre>// 1 būdas — innerHTML (trumpiau)
+container.innerHTML = '&lt;div class="content"&gt;This is the glorious text-content!&lt;/div&gt;';
+
+// 2 būdas — createElement (ilgiau, bet saugiau)
+const content = document.createElement('div');
+content.classList.add('content');
+content.textContent = 'This is the glorious text-content!';
+container.appendChild(content);</pre>
+
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;"></th>
+    <th style="text-align:left; padding:6px;">innerHTML</th>
+    <th style="text-align:left; padding:6px;">createElement</th>
+  </tr>
+  <tr><td style="padding:6px;">Rašymas</td><td style="padding:6px;">trumpesnis</td><td style="padding:6px;">ilgesnis</td></tr>
+  <tr><td style="padding:6px;">Vartotojo tekstas</td><td style="padding:6px;">⚠️ pavojinga</td><td style="padding:6px;">✅ saugu</td></tr>
+  <tr><td style="padding:6px;">Esami vaikai</td><td style="padding:6px;">⚠️ perkuriami iš naujo</td><td style="padding:6px;">✅ nepaliečiami</td></tr>
+  <tr><td style="padding:6px;">Įvykių klausytojai</td><td style="padding:6px;">⚠️ dingsta</td><td style="padding:6px;">✅ išlieka</td></tr>
+</table>
+
+<h2>Ciklas: daug elementų iš masyvo</h2>
+
+<p>Taip kuriami sąrašai iš duomenų — labai dažnas uždavinys:</p>
+
+<pre>const prekes = ["Duona", "Pienas", "Sūris"];
+const ul = document.querySelector("#sarasas");
+
+prekes.forEach((preke) => {
+  const li = document.createElement("li");
+  li.textContent = preke;
+  ul.appendChild(li);
+});</pre>
+
+<div class="demo">
+  <ul id="sarasas"></ul>
+  <button onclick="kurtiSarasa()">Sukurti sąrašą</button>
+  <button onclick="valytiSarasa()">↺ Išvalyti</button>
+</div>
+
+<p class="tip">⚠️ Prieš kuriant naują sąrašą dažniausiai reikia <strong>išvalyti seną</strong>
+(<code>ul.innerHTML = ""</code>), kitaip elementai kaupsis vienas po kito.</p>
+
+<script>
+  const container = document.querySelector("#container");
+  const out = document.getElementById("out");
+
+  function ideti() {
+    // 1. Surandam konteinerį
+    const container = document.querySelector("#container");
+
+    // 2. Sukuriam naują elementą
+    const content = document.createElement("div");
+    const poKurimo = content.outerHTML;   // įsimenam, kaip atrodo DABAR
+
+    // 3. Nustatom klasę ir tekstą
+    content.classList.add("content");
+    content.textContent = "This is the glorious text-content!";
+
+    // 4. Pridedam į puslapį
+    container.appendChild(content);
+
+    out.textContent =
+      "1) document.querySelector('#container')\n" +
+      "   → radom tuščią konteinerį\n\n" +
+      "2) document.createElement('div')\n" +
+      "   → " + poKurimo + "  (dar be klasės ir teksto)\n\n" +
+      "3) content.classList.add('content')\n" +
+      "   → class = '" + content.className + "'  → iš CSS ateina mėlynas fonas\n" +
+      "   content.textContent = '...'\n" +
+      "   → tekstas įrašytas\n\n" +
+      "4) container.appendChild(content)\n" +
+      "   → TIK DABAR matomas puslapyje ✅\n\n" +
+      "container vaikų: " + container.children.length;
+  }
+
+  function atstatyti() {
+    container.innerHTML = "";
+    out.textContent = "";
+  }
+
+  function kurtiSarasa() {
+    const prekes = ["Duona", "Pienas", "Sūris"];
+    const ul = document.querySelector("#sarasas");
+
+    ul.innerHTML = "";   // pirma išvalom, kad nesikauptų
+
+    prekes.forEach((preke) => {
+      const li = document.createElement("li");
+      li.textContent = preke;
+      ul.appendChild(li);
+    });
+  }
+
+  function valytiSarasa() {
+    document.querySelector("#sarasas").innerHTML = "";
+  }
+</script>
+
+</body>
+</html>

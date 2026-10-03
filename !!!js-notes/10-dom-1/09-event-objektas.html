@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>09 · Event objektas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>09 · Įvykių savybės ir metodai</h1>
+
+<p>DOM įvykiai (events) gali turėti <strong>savybes ir metodus</strong>.
+Sąrašas: <a href="https://www.w3schools.com/jsref/dom_obj_event.asp" target="_blank">w3schools.com/jsref/dom_obj_event.asp</a></p>
+
+<p class="tip">⚠️ Atkreipk dėmesį: norint dirbti su įvykių savybėmis ar metodais,
+<strong>įvykis turi būti perduodamas funkcijai</strong>.</p>
+
+<h2>event.clientX / event.clientY</h2>
+<pre>&lt;h2 onclick="showCoords(event)"&gt;Click this heading...&lt;/h2&gt;
+&lt;p id="demo"&gt;&lt;/p&gt;
+
+function showCoords(event) {
+  var x = event.clientX;
+  var y = event.clientY;
+  var coords = "X coords: " + x + ", Y coords: " + y;
+  document.getElementById("demo").innerHTML = coords;
+}</pre>
+
+<div class="demo">
+  <h2 onclick="showCoords(event)" style="border:none; margin-top:0; padding-top:0; cursor:pointer;">
+    Click this heading to get the x (horizontal) and y (vertical) coordinates
+    of the mouse pointer when it was clicked.</h2>
+  <p><strong>Tip:</strong> Try to click different places in the heading.</p>
+  <p id="demo"></p>
+</div>
+
+<h2>event.target — svarbiausias</h2>
+
+<p>Vienas iš svarbiausių yra <strong><code>event.target</code></strong> — jo pagalba skriptas mato
+HTML elementą, ant kurio vyksta įvykis, pvz. paspaudimas.</p>
+
+<pre>document.body.addEventListener("click", (event) =&gt; {
+  event.preventDefault();          // standartinio naršyklės elgesio stabdymas
+  console.log(event.target);       // elementas, ant kurio paspausta
+  event.target.style.color = "red";
+});</pre>
+
+<div class="demo" id="target-demo">
+  <p>Paspausk bet kurį elementą šiame rėmelyje:</p>
+  <button>Mygtukas</button>
+  <span style="padding:4px 8px; background:#eee;">span elementas</span>
+  <p><b>Storas tekstas</b> ir paprastas tekstas.</p>
+</div>
+
+<h2>event.target.matches()</h2>
+
+<p>Metodo <code>matches()</code> pagalba patikrinsime, ar paspaustas elementas turi id "my-button":</p>
+
+<pre>document.addEventListener("click", function (event) {
+  // Check if the event target is a specific element
+  if (event.target.matches("#my-button")) {
+    // Do something here
+    console.log("The #my-button element was clicked!");
+  }
+});</pre>
+
+<div class="demo">
+  <button id="my-button">my-button</button>
+  <button id="kitas">kitas mygtukas</button>
+</div>
+
+<h2>preventDefault()</h2>
+
+<p>Sustabdo <strong>standartinį naršyklės elgesį</strong>: nuorodos atidarymą,
+formos siuntimą (ir dėl to — puslapio persikrovimą).</p>
+
+<pre>form.addEventListener("submit", (event) =&gt; {
+  event.preventDefault();   // puslapis NEpersikraus
+  // ...toliau duomenis apdorojame patys
+});</pre>
+
+<div class="demo">
+  <form id="forma" action="#">
+    <label for="fname">First name:</label><br>
+    <input type="text" id="fname" name="fname" value="John"><br>
+    <label for="lname">Last name:</label><br>
+    <input type="text" id="lname" name="lname" value="Doe"><br><br>
+    <input type="submit" value="Submit">
+  </form>
+  <p><a href="https://www.google.com" id="nuoroda">Ši nuoroda neveiks (preventDefault)</a></p>
+</div>
+
+<h2>Žurnalas</h2>
+<div class="out" id="out">(laukiama įvykių...)</div>
+
+<script>
+  const out = document.getElementById("out");
+  let eilutes = [];
+  function log(t) {
+    eilutes.unshift(t);
+    eilutes = eilutes.slice(0, 12);
+    out.textContent = eilutes.join("\n");
+  }
+
+  // --- clientX / clientY ---
+  function showCoords(event) {
+    var x = event.clientX;
+    var y = event.clientY;
+    var coords = "X coords: " + x + ", Y coords: " + y;
+    document.getElementById("demo").innerHTML = coords;
+    log("click → " + coords);
+  }
+
+  // --- event.target ---
+  document.getElementById("target-demo").addEventListener("click", (event) => {
+    log("event.target.tagName → " + event.target.tagName +
+        "   tekstas: '" + event.target.textContent.trim().slice(0, 20) + "'");
+    event.target.style.color = "red";
+  });
+
+  // --- matches() ---
+  document.addEventListener("click", function (event) {
+    if (event.target.matches("#my-button")) {
+      log("matches('#my-button') → TAIP, paspaustas my-button ✅");
+    } else if (event.target.matches("button")) {
+      log("matches('#my-button') → ne, bet tai mygtukas");
+    }
+  });
+
+  // --- preventDefault ---
+  document.getElementById("forma").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const fname = document.getElementById("fname").value;
+    const lname = document.getElementById("lname").value;
+    log("submit → preventDefault(); duomenys: " + fname + " " + lname);
+  });
+
+  document.getElementById("nuoroda").addEventListener("click", (event) => {
+    event.preventDefault();
+    log("click ant nuorodos → preventDefault(), niekur neinam");
+  });
+
+  // --- Kitos naudingos event savybės ---
+  document.addEventListener("keydown", (e) => {
+    log("keydown → key: '" + e.key + "'  ctrl: " + e.ctrlKey + "  shift: " + e.shiftKey);
+  });
+</script>
+
+</body>
+</html>

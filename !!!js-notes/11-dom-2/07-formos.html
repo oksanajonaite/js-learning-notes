@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>07 · Darbas su formomis</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>07 · Darbas su formomis</h1>
+
+<h2>preventDefault()</h2>
+
+<p>Kad paspaudus submit mygtuką puslapis nepersikrautų, reikia pridėti
+<strong><code>event.preventDefault()</code></strong> metodą.</p>
+
+<pre>form.addEventListener('submit', (event) =&gt; {
+    // stop form submission
+    event.preventDefault();
+});</pre>
+
+<h2>Formos elementų pasiekimas</h2>
+
+<p>Galimas su bet kuriuo iš DOM metodų:
+<code>getElementsByName()</code>, <code>getElementById()</code>, <code>querySelector()</code></p>
+
+<pre>const form = document.getElementById('signup');</pre>
+
+<p><strong>arba</strong> per formos <code>elements</code> kolekciją:</p>
+
+<pre>form.elements[1];         // by index
+form.elements['email'];   // by name
+form.elements['email'];   // by id</pre>
+
+<h2>Reikšmių pasiekimas</h2>
+
+<p>Formos elementų reikšmės pasiekiamos su savybe <strong><code>value</code></strong>:</p>
+
+<pre>const form = document.getElementById('signup');
+const name = form.elements['name'];
+const email = form.elements['email'];
+
+// getting the element's value
+let fullName = name.value;
+let emailAddress = email.value;</pre>
+
+<p><strong>arba</strong></p>
+
+<pre>var age = document.getElementById("age").value;</pre>
+
+<h2>Pabandyk</h2>
+
+<div class="demo">
+  <form id="signup">
+    <p>
+      <label for="name">Vardas:</label><br>
+      <input type="text" id="name" name="name" value="Jonas">
+    </p>
+    <p>
+      <label for="email">El. paštas:</label><br>
+      <input type="email" id="email" name="email" value="jonas@example.com">
+    </p>
+    <p>
+      <label for="age">Amžius:</label><br>
+      <input type="number" id="age" name="age" value="25">
+    </p>
+    <p>
+      <label for="miestas">Miestas:</label><br>
+      <select id="miestas" name="miestas">
+        <option value="VLN">Vilnius</option>
+        <option value="KAU">Kaunas</option>
+        <option value="KLP">Klaipėda</option>
+      </select>
+    </p>
+    <p>
+      <label><input type="checkbox" id="sutinku" name="sutinku"> Sutinku su sąlygomis</label>
+    </p>
+    <p><input type="submit" value="Registruotis"></p>
+  </form>
+</div>
+
+<h2>Rezultatas</h2>
+<div class="out" id="out">(užpildyk formą ir paspausk „Registruotis“)</div>
+
+<p class="tip">⚠️ <code>value</code> <strong>visada grąžina tekstą (string)</strong>, net ir iš
+<code>type="number"</code> laukelio. Skaičiavimams reikia <code>Number(...)</code>.</p>
+
+<h2>Skirtingi laukelių tipai</h2>
+
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">Tipas</th>
+    <th style="text-align:left; padding:6px;">Kaip paimti reikšmę</th>
+  </tr>
+  <tr><td style="padding:6px;"><code>text</code>, <code>email</code>, <code>password</code></td><td style="padding:6px;"><code>input.value</code> → string</td></tr>
+  <tr><td style="padding:6px;"><code>number</code></td><td style="padding:6px;"><code>Number(input.value)</code> ⚠️</td></tr>
+  <tr><td style="padding:6px;"><code>checkbox</code></td><td style="padding:6px;"><code>input.checked</code> → true/false ⚠️ ne value!</td></tr>
+  <tr><td style="padding:6px;"><code>select</code></td><td style="padding:6px;"><code>select.value</code> → pasirinkto option reikšmė</td></tr>
+  <tr><td style="padding:6px;"><code>radio</code></td><td style="padding:6px;"><code>document.querySelector('input[name=x]:checked').value</code></td></tr>
+</table>
+
+<h2>Tipinė formos tvarkymo schema</h2>
+
+<pre>const form = document.getElementById('signup');
+
+form.addEventListener('submit', (event) =&gt; {
+  event.preventDefault();                  // 1. sustabdom persikrovimą
+
+  const vardas = form.elements['name'].value.trim();   // 2. paimam reikšmes
+
+  if (vardas === "") {                     // 3. patikrinam
+    alert("Įveskite vardą");
+    return;
+  }
+
+  console.log("Siunčiam:", vardas);        // 4. darom, ko reikia
+});</pre>
+
+<div class="demo">
+  <form id="patikra">
+    <input type="text" id="btinas" placeholder="Palik tuščią ir paspausk">
+    <input type="submit" value="Tikrinti">
+  </form>
+  <p id="zinute" style="font-weight:bold;"></p>
+</div>
+
+<script>
+  const out = document.getElementById("out");
+  const form = document.getElementById("signup");
+
+  form.addEventListener("submit", (event) => {
+    // stop form submission
+    event.preventDefault();
+
+    // --- Trys būdai pasiekti tą patį elementą ---
+    const pagalId = document.getElementById("name");
+    const pagalName = form.elements["name"];
+    const pagalIndeksa = form.elements[0];
+
+    // --- Reikšmės ---
+    const name = form.elements["name"];
+    const email = form.elements["email"];
+    let fullName = name.value;
+    let emailAddress = email.value;
+
+    var age = document.getElementById("age").value;
+    const miestas = document.getElementById("miestas");
+    const sutinku = document.getElementById("sutinku");
+
+    out.textContent =
+      "event.preventDefault()  → puslapis NEpersikrovė ✅\n\n" +
+      "Trys būdai pasiekti tą patį elementą:\n" +
+      "  document.getElementById('name')  → " + pagalId.tagName + "\n" +
+      "  form.elements['name']            → " + pagalName.tagName + "\n" +
+      "  form.elements[0]                 → " + pagalIndeksa.tagName + "\n" +
+      "  ar tas pats elementas? → " + (pagalId === pagalName && pagalName === pagalIndeksa) + "\n\n" +
+      "REIKŠMĖS:\n" +
+      "  name.value       → '" + fullName + "'\n" +
+      "  email.value      → '" + emailAddress + "'\n" +
+      "  age.value        → '" + age + "'   typeof: " + typeof age + " ⚠️\n" +
+      "  Number(age)      → " + Number(age) + "   typeof: " + typeof Number(age) + " ✅\n" +
+      "  miestas.value    → '" + miestas.value + "'  (option reikšmė)\n" +
+      "  miestas rodomas  → '" + miestas.options[miestas.selectedIndex].text + "'\n" +
+      "  sutinku.checked  → " + sutinku.checked + "  ⚠️ checkbox'ui NE value\n" +
+      "  sutinku.value    → '" + sutinku.value + "'  ← nenaudinga\n\n" +
+      "Visi formos elementai (" + form.elements.length + "):\n" +
+      Array.from(form.elements)
+        .map((el, i) => "  " + i + ": " + el.tagName.toLowerCase() +
+             (el.type ? " type=" + el.type : "") +
+             (el.name ? " name=" + el.name : ""))
+        .join("\n");
+  });
+
+  // --- Paprastas patikrinimas ---
+  document.getElementById("patikra").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const laukas = document.getElementById("btinas");
+    const zinute = document.getElementById("zinute");
+
+    if (laukas.value.trim() === "") {
+      zinute.textContent = "⚠️ Laukas negali būti tuščias";
+      zinute.style.color = "#b8693a";
+    } else {
+      zinute.textContent = "✅ Įvesta: " + laukas.value;
+      zinute.style.color = "#6b7c4a";
+    }
+  });
+</script>
+
+</body>
+</html>

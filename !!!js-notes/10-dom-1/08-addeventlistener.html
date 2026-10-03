@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>08 · addEventListener</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>08 · Įvykių klausymas — addEventListener</h1>
+
+<p>Bet kuriam DOM elementui galima parašyti <strong>įvykių klausymo metodą</strong>.
+<strong>Tai šiuolaikinis būdas dirbti su įvykiais.</strong></p>
+
+<pre>&lt;button id="myBtn"&gt;Try it&lt;/button&gt;
+
+&lt;script&gt;
+document.getElementById("myBtn").addEventListener("click", myFunction);
+
+function myFunction() {
+  alert("Hello World!");
+}
+&lt;/script&gt;</pre>
+
+<p>Įvykis gali būti bet kuris iš sąrašo:
+<a href="https://www.w3schools.com/jsref/dom_obj_event.asp" target="_blank">w3schools.com/jsref/dom_obj_event.asp</a></p>
+
+<h2>Pabandyk</h2>
+<div class="demo">
+  <button id="myBtn">Try it</button>
+  <button id="multi">Šis mygtukas turi 3 klausytojus</button>
+  <button id="nuimti">Nuimti vieną klausytoją</button>
+  <p id="demo"></p>
+</div>
+
+<h2>Sintaksė</h2>
+<pre>elementas.addEventListener("ivykis", funkcija);
+
+// 1. Įvardinta funkcija
+btn.addEventListener("click", myFunction);     // ⚠️ BE skliaustų!
+
+// 2. Anoniminė funkcija
+btn.addEventListener("click", function () { ... });
+
+// 3. Arrow funkcija (dažniausiai)
+btn.addEventListener("click", () => { ... });</pre>
+
+<p class="tip">⚠️ Funkcija paduodama <strong>be skliaustų</strong>: <code>myFunction</code>, ne
+<code>myFunction()</code>. Su skliaustais funkcija būtų iškviesta iš karto, o klausytojui
+būtų paduotas jos <em>rezultatas</em>.</p>
+
+<h2>Keli klausytojai tam pačiam įvykiui</h2>
+<pre>btn.addEventListener("click", pirmas);
+btn.addEventListener("click", antras);   // ✅ abu suveiks
+
+// Palyginimui, senasis būdas:
+btn.onclick = pirmas;
+btn.onclick = antras;                    // ⚠️ antrasis PERRAŠO pirmąjį</pre>
+
+<h2>Klausytojo nuėmimas</h2>
+<pre>btn.removeEventListener("click", myFunction);
+// ⚠️ veikia tik su ĮVARDINTA funkcija — anoniminės nuimti nepavyks</pre>
+
+<h2>Dažniausi įvykiai</h2>
+<table style="border-collapse: collapse; width: 100%; font-size: .9rem;">
+  <tr style="background:#eee;">
+    <th style="text-align:left; padding:6px;">Grupė</th>
+    <th style="text-align:left; padding:6px;">Įvykiai</th>
+  </tr>
+  <tr><td style="padding:6px;">Pelės</td><td style="padding:6px;"><code>click</code>, <code>dblclick</code>, <code>mousemove</code>, <code>mouseover</code>, <code>mouseout</code></td></tr>
+  <tr><td style="padding:6px;">Lietimo</td><td style="padding:6px;"><code>touchstart</code>, <code>touchmove</code></td></tr>
+  <tr><td style="padding:6px;">Klaviatūros</td><td style="padding:6px;"><code>keydown</code>, <code>keyup</code>, <code>keypress</code></td></tr>
+  <tr><td style="padding:6px;">Formos</td><td style="padding:6px;"><code>focus</code>, <code>blur</code>, <code>change</code>, <code>input</code>, <code>submit</code></td></tr>
+  <tr><td style="padding:6px;">Window</td><td style="padding:6px;"><code>load</code>, <code>scroll</code>, <code>resize</code></td></tr>
+</table>
+
+<h2>Gyvas žurnalas</h2>
+<p>Pajudink pelę virš mygtukų, paspausk juos, pabandyk klaviatūrą:</p>
+<div class="out" id="out">(laukiama įvykių...)</div>
+
+<p class="tip">💡 Interaktyvi įvykių mokymosi aplinka: <a href="https://domevents.dev/" target="_blank">domevents.dev</a></p>
+
+<script>
+  const out = document.getElementById("out");
+  let eilutes = [];
+  function log(t) {
+    eilutes.unshift(t);
+    eilutes = eilutes.slice(0, 12);      // rodom tik paskutines 12
+    out.textContent = eilutes.join("\n");
+  }
+
+  // --- 1. Įvardinta funkcija (kaip skaidrėje) ---
+  document.getElementById("myBtn").addEventListener("click", myFunction);
+
+  function myFunction() {
+    document.getElementById("demo").innerHTML = "Hello World!";
+    log("click  → myBtn");
+  }
+
+  // --- 2. Keli klausytojai tam pačiam įvykiui ---
+  const multi = document.getElementById("multi");
+
+  function pirmas() { log("click  → multi: klausytojas 1"); }
+  function antras() { log("click  → multi: klausytojas 2"); }
+
+  multi.addEventListener("click", pirmas);
+  multi.addEventListener("click", antras);
+  multi.addEventListener("click", () => log("click  → multi: klausytojas 3 (anoniminis)"));
+
+  // --- 3. Klausytojo nuėmimas ---
+  document.getElementById("nuimti").addEventListener("click", () => {
+    multi.removeEventListener("click", antras);
+    log("removeEventListener('click', antras) — dabar liko 2 klausytojai");
+  });
+
+  // --- 4. Kiti įvykiai ---
+  multi.addEventListener("mouseover", () => log("mouseover → multi"));
+  multi.addEventListener("mouseout", () => log("mouseout  → multi"));
+
+  document.addEventListener("keydown", (e) => log("keydown → klavišas: " + e.key));
+
+  window.addEventListener("resize", () => log("resize → " + window.innerWidth + "px"));
+</script>
+
+</body>
+</html>
